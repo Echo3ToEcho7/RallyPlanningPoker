@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RallyPlanningPoker</title>
+
+    <script type="text/javascript" src="/apps/2.0rc1/sdk.js"></script>
+    <script type='text/javascript' src='//cdn.firebase.com/v0/firebase.js'></script>
+
+
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+var Ext = window.Ext4 || window.Ext;
+var Rally = window.Rally;
+
+Ext.define('CustomApp', {
+    extend: 'Rally.app.App',
+    componentCls: 'app',
+    
+    backlogView: null,
+    usersView: null,
+    votingView: null,
+    cardsView: null,
+    
+    backlogDS: null,
+
+    launch: function() {
+      //Write app code here
+      var me = this;
+      
+      me.on('beforedestroy', function () {
+        console.log('Leaving app');
+      });
+      
+      me.on('beforeactive', function () {
+        console.log('Entering app');
+      });
+
+      Rally.data.ModelFactory.getModel({
+        type: 'UserStory',
+        success: function(model) {
+          me.backlogView = this.add({
+            xtype: 'rallygrid',
+            model: model,
+            columnCfgs: [
+                'FormattedID',
+                'Name',
+                'Release',
+                'PlanEstimate'
+            ],
+            storeConfig: {
+              filters: [{
+                  property: 'Iteration',
+                  operator: '=',
+                  value: 'null'
+                 }, {
+                  property: 'DirectChildrenCount',
+                  operator: '=',
+                  value: 0
+                }
+              ],
+              sorters: [
+                {
+                  property: 'Rank',
+                  direction: 'DESC'
+                }
+              ]
+            }
+          });
+        },
+        scope: this
+      });
+    }
+});
+
+            
+            Rally.launchApp('CustomApp', {
+                name:"RallyPlanningPoker",
+                parentRepos:""
+            });
+
+        });
+    </script>
+
+
+
+
+    <style type="text/css">
+.app {
+     /* Add app styles here */
+}
+
+    </style>
+
+</head>
+<body></body>
+</html>
